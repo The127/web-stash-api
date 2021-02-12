@@ -1,0 +1,16 @@
+language: go
+
+service:
+  - docker
+
+go:
+  - 1.x
+
+script:
+  - docker build -t darkarotte/web-stash-api .
+
+deploy:
+  provider: script
+  script: bash ./docker_push.sh
+  on:
+    branch: master
