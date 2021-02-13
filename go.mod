@@ -8,5 +8,6 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/uuid v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/lib/pq v1.9.0
 	gopkg.in/yaml.v2 v2.2.8
 )

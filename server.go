@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
+	_ "github.com/lib/pq"
 	"gopkg.in/yaml.v2"
 	"log"
 	"os"
