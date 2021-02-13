@@ -20,5 +20,16 @@ func MapItem(item *ent.BagItem) *dtos.ItemDto {
 		Description: item.Description,
 		Icon:        item.Icon,
 		Image:       item.Image,
+		Link:        item.Link,
+	}
+}
+
+func MapSubItem(subItem *ent.SubItem) *dtos.SubItemDto {
+	return &dtos.SubItemDto{
+		Id:          subItem.ID.String(),
+		Name:        subItem.Name,
+		Description: subItem.Description,
+		Icon:        subItem.Icon,
+		Link:        subItem.Link,
 	}
 }

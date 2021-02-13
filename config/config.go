@@ -19,6 +19,9 @@ type Config struct {
 		Address string `yaml:"address" envconfig:"DATABASE__ADDRESS"`
 		Debug   bool   `yaml:"debug" envconfig:"DATABASE__DEBUG"`
 	} `yaml:"database"`
+	Authentication struct {
+		AllowedApiKeys []string `yaml:"allowedApiKeys" envconfig:"AUTHENTICATION__ALLOWED_API_KEYS"`
+	} `yaml:"authentication"`
 }
 
 var Cfg Config
@@ -26,6 +29,14 @@ var Cfg Config
 func ReadConfig(configPath, envPrefix string) {
 	readFileConfig(&Cfg, configPath)
 	readEnv(&Cfg, envPrefix)
+
+	validateConfig()
+}
+
+func validateConfig() {
+	if len(Cfg.Authentication.AllowedApiKeys) == 0 {
+		panic("missing api keys in configuration")
+	}
 }
 
 func readFileConfig(cfg *Config, path string) {

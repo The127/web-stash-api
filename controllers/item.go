@@ -13,6 +13,55 @@ import (
 
 type ItemController struct{}
 
+func (i ItemController) GetSubItems(c *gin.Context) {
+	itemId := c.Param("itemId")
+
+	if itemId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing itemId"})
+		c.Abort()
+		return
+	}
+
+	itemUUID, err := uuid.Parse(itemId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "item id cannot be parsed as valid uuid"})
+		c.Abort()
+		return
+	}
+
+	db := database.OpenDb()
+	defer db.Close()
+
+	ctx := context.Background()
+	all, err := db.BagItem.
+		Query().
+		Where(bagitem.IDEQ(itemUUID)).
+		WithSubItems().
+		All(ctx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Abort()
+		return
+	}
+
+	if len(all) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "item not found"})
+		c.Abort()
+		return
+	}
+
+	item := all[0]
+	subItemList := dtos.SubItemList{
+		SubItems: make([]*dtos.SubItemDto, len(item.Edges.SubItems)),
+	}
+
+	for i := range item.Edges.SubItems {
+		subItemList.SubItems[i] = mapping.MapSubItem(item.Edges.SubItems[i])
+	}
+
+	c.JSON(http.StatusOK, subItemList)
+}
+
 func (i ItemController) GetItem(c *gin.Context) {
 	itemId := c.Param("itemId")
 
@@ -43,8 +92,13 @@ func (i ItemController) GetItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, mapping.MapItem(all[0]))
+	if len(all) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "item not found"})
+		c.Abort()
+		return
+	}
 
+	c.JSON(http.StatusOK, mapping.MapItem(all[0]))
 }
 
 func (i ItemController) CreateItem(c *gin.Context) {
@@ -73,6 +127,7 @@ func (i ItemController) CreateItem(c *gin.Context) {
 		SetBagID(bagId).
 		SetDescription(createItemDto.Description).
 		SetImage(createItemDto.Image).
+		SetLink(createItemDto.Link).
 		Save(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -197,6 +252,9 @@ func (i ItemController) UpdateItem(c *gin.Context) {
 	}
 	if updateItemDto.Name != "" {
 		update.SetName(updateItemDto.Name)
+	}
+	if updateItemDto.Link != "" {
+		update.SetLink(updateItemDto.Link)
 	}
 
 	result, err := update.Save(ctx)

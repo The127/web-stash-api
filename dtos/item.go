@@ -10,6 +10,7 @@ type ItemDto struct {
 	Description string `json:"description"`
 	Icon        string `json:"icon"`
 	Image       string `json:"image"`
+	Link        string `json:"link"`
 }
 
 type CreateItemDto struct {
@@ -18,6 +19,7 @@ type CreateItemDto struct {
 	Description string `json:"description" binding:"required"`
 	Icon        string `json:"icon" binding:"required"`
 	Image       string `json:"image" binding:"required"`
+	Link        string `json:"link" binding:"required"`
 }
 
 type UpdateItemDto struct {
@@ -25,6 +27,7 @@ type UpdateItemDto struct {
 	Description string `json:"description"`
 	Icon        string `json:"icon"`
 	Image       string `json:"image"`
+	Link        string `json:"link"`
 }
 
 type DeleteItemDto struct {

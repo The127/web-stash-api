@@ -6,8 +6,8 @@ import (
 	"web-stash-api/config"
 )
 
-func CorsMiddleware(cfg config.Config) gin.HandlerFunc {
+func CorsMiddleware() gin.HandlerFunc {
 	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = cfg.Server.Cors.AllowOrigins
+	corsConfig.AllowOrigins = config.Cfg.Server.Cors.AllowOrigins
 	return cors.New(corsConfig)
 }

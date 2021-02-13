@@ -15,7 +15,6 @@ type BagController struct{}
 
 func (b BagController) GetBagItems(c *gin.Context) {
 	bagId := c.Param("bagId")
-
 	if bagId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "missing bagId"})
 		c.Abort()
@@ -49,6 +48,7 @@ func (b BagController) GetBagItems(c *gin.Context) {
 	itemList := dtos.ItemList{
 		Items: make([]*dtos.ItemDto, len(bag.Edges.Items)),
 	}
+
 	for i := range bag.Edges.Items {
 		itemList.Items[i] = mapping.MapItem(bag.Edges.Items[i])
 	}
