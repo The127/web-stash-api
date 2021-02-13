@@ -17,3 +17,4 @@ FROM alpine
 WORKDIR /app
 COPY --from=builder /src/web-stash-api /app/
 ENTRYPOINT ./web-stash-api
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
