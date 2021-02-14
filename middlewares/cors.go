@@ -9,5 +9,6 @@ import (
 func CorsMiddleware() gin.HandlerFunc {
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = config.Cfg.Server.Cors.AllowOrigins
+	corsConfig.AllowHeaders = append(corsConfig.AllowHeaders, "X-Auth-Token")
 	return cors.New(corsConfig)
 }
